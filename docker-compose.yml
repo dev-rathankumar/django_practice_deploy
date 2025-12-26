@@ -8,8 +8,6 @@ services:
 
   backend:
     build: ./backend-drf
-    ports:
-      - "8000:8000"
     env_file:
       - ./backend-drf/.env.docker
     depends_on:
@@ -27,9 +25,17 @@ services:
       context: ./frontend
       args:
         VITE_SERVER_BASE_URL: "http://45.79.126.251:8000/api/v1"
-    ports:
-      - "5173:80"
     depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
       - backend
 
 
